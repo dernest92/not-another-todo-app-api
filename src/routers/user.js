@@ -1,9 +1,6 @@
 const express = require("express");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
-const multer = require("multer");
-const sharp = require("sharp");
-const mailer = require("../emails/account");
 
 const userRouter = new express.Router();
 
@@ -91,66 +88,11 @@ userRouter.patch("/api/users/me", auth, async (req, res) => {
 
 userRouter.delete("/api/users/me", auth, async (req, res) => {
   try {
-    // mailer.goodbye(req.user.email, req.user.name);
     await req.user.remove();
     res.send("profile deleted");
   } catch (e) {
     res.status(500).send();
     console.log(e);
-  }
-});
-
-const upload = multer({
-  limits: {
-    fileSize: 1000000
-  },
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-      console.log("file error");
-      return cb(new Error("Invalid file type"));
-    }
-    console.log("file uploaded");
-    cb(undefined, true);
-  }
-});
-
-userRouter.post(
-  "/api/users/me/avatar",
-  auth,
-  upload.single("avatar"),
-  async (req, res) => {
-    const buffer = await sharp(req.file.buffer)
-      .resize({ width: 250, height: 250 })
-      .png()
-      .toBuffer();
-
-    req.user.avatar = buffer;
-
-    res.send("image uploaded");
-    await req.user.save();
-  },
-  (error, req, res, next) => {
-    res.status(400).send({ error: error.message });
-  }
-);
-
-userRouter.delete("/api/users/me/avatar", auth, async (req, res) => {
-  req.user.avatar = undefined;
-  await req.user.save();
-  res.send();
-});
-
-userRouter.get("/api/users/:id/avatar", async (req, res) => {
-  console.log("get user avatar");
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user.avatar) {
-      throw new Error();
-    }
-    res.set("Content-Type", "image/png");
-    res.send(user.avatar);
-  } catch (e) {
-    res.status(404).send();
   }
 });
 
