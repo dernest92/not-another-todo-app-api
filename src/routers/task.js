@@ -4,7 +4,7 @@ const auth = require("../middleware/auth");
 
 const taskRouter = new express.Router();
 
-taskRouter.post("/api/tasks", auth, async (req, res) => {
+taskRouter.post("/tasks", auth, async (req, res) => {
   const task = new Task({
     ...req.body,
     owner: req.user._id
@@ -20,7 +20,7 @@ taskRouter.post("/api/tasks", auth, async (req, res) => {
 });
 
 // GET /tasks?sortBy=createdAt_asc
-taskRouter.get("/api/tasks", auth, async (req, res) => {
+taskRouter.get("/tasks", auth, async (req, res) => {
   const match = {};
 
   if (req.query.completed) {
@@ -58,7 +58,7 @@ taskRouter.get("/api/tasks", auth, async (req, res) => {
   }
 });
 
-taskRouter.get("/api/tasks/:id", auth, async (req, res) => {
+taskRouter.get("/tasks/:id", auth, async (req, res) => {
   try {
     const task = await Task.findOne({
       _id: req.params.id,
@@ -75,7 +75,7 @@ taskRouter.get("/api/tasks/:id", auth, async (req, res) => {
   }
 });
 
-taskRouter.patch("/api/tasks/:id", auth, async (req, res) => {
+taskRouter.patch("/tasks/:id", auth, async (req, res) => {
   // array of fields that may be updated
   const allowedUpdates = ["description", "completed"];
 
@@ -113,7 +113,7 @@ taskRouter.patch("/api/tasks/:id", auth, async (req, res) => {
   }
 });
 
-taskRouter.delete("/api/tasks/:id", auth, async (req, res) => {
+taskRouter.delete("/tasks/:id", auth, async (req, res) => {
   try {
     const task = await Task.findOne({
       _id: req.params.id,

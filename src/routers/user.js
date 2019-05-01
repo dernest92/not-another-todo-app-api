@@ -4,11 +4,11 @@ const auth = require("../middleware/auth");
 
 const userRouter = new express.Router();
 
-userRouter.get("/api/users/me", auth, async (req, res) => {
+userRouter.get("/users/me", auth, async (req, res) => {
   res.send(req.user);
 });
 
-userRouter.post("/api/users", async (req, res) => {
+userRouter.post("/users", async (req, res) => {
   const user = new User(req.body);
   try {
     await user.save();
@@ -21,7 +21,7 @@ userRouter.post("/api/users", async (req, res) => {
   }
 });
 
-userRouter.post("/api/users/login", async (req, res) => {
+userRouter.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
       req.body.email,
@@ -34,7 +34,7 @@ userRouter.post("/api/users/login", async (req, res) => {
   }
 });
 
-userRouter.post("/api/users/logout", auth, async (req, res) => {
+userRouter.post("/users/logout", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(
       token => token.token !== req.token
@@ -46,7 +46,7 @@ userRouter.post("/api/users/logout", auth, async (req, res) => {
   }
 });
 
-userRouter.post("/api/users/logoutall", auth, async (req, res) => {
+userRouter.post("/users/logoutall", auth, async (req, res) => {
   try {
     req.user.tokens = [];
     await req.user.save();
@@ -56,7 +56,7 @@ userRouter.post("/api/users/logoutall", auth, async (req, res) => {
   }
 });
 
-userRouter.get("/api/users", async (req, res) => {
+userRouter.get("/users", async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -65,7 +65,7 @@ userRouter.get("/api/users", async (req, res) => {
   }
 });
 
-userRouter.patch("/api/users/me", auth, async (req, res) => {
+userRouter.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "password", "age"];
 
@@ -86,7 +86,7 @@ userRouter.patch("/api/users/me", auth, async (req, res) => {
   }
 });
 
-userRouter.delete("/api/users/me", auth, async (req, res) => {
+userRouter.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
     res.send("profile deleted");
