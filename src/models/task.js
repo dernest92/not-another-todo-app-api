@@ -19,7 +19,7 @@ const taskSchema = new mongoose.Schema(
       trim: true
     },
     date: {
-      tpye: mongoose.Schema.Types.Mixed,
+      type: mongoose.Schema.Types.Mixed,
       require: false
     },
     completed: {

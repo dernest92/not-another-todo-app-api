@@ -12,7 +12,7 @@ taskRouter.post("/tasks", auth, async (req, res) => {
 
   try {
     await task.save();
-    res.send(task);
+    res.status(201).send(task);
   } catch (e) {
     res.status(500).send(e);
     console.log(e);
@@ -77,16 +77,17 @@ taskRouter.get("/tasks/:id", auth, async (req, res) => {
 
 taskRouter.patch("/tasks/:id", auth, async (req, res) => {
   // array of fields that may be updated
-  const allowedUpdates = ["description", "completed"];
+  const allowedUpdates = ["completed", "title", "priority", "notes", "date"];
 
   // field attempting to be updated
   const updates = Object.keys(req.body);
+  console.log(updates);
 
   // Will be false if an invalid updated is attempted
   const isValidOperation = updates.every(update =>
     allowedUpdates.includes(update)
   );
-
+  console.log(isValidOperation);
   // If invalid, send error
   if (!isValidOperation) {
     return res.status(400).send("update invalid");
