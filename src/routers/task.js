@@ -77,7 +77,14 @@ taskRouter.get("/tasks/:id", auth, async (req, res) => {
 
 taskRouter.patch("/tasks/:id", auth, async (req, res) => {
   // array of fields that may be updated
-  const allowedUpdates = ["completed", "title", "priority", "notes", "date"];
+  const allowedUpdates = [
+    "completed",
+    "title",
+    "priority",
+    "notes",
+    "date",
+    "category"
+  ];
 
   // field attempting to be updated
   const updates = Object.keys(req.body);

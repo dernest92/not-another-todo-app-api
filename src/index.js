@@ -8,6 +8,7 @@ require("./db/mongoose");
 // Load Routers
 const userRouter = require("./routers/user");
 const taskRouter = require("./routers/task");
+const categoryRouter = require("./routers/category");
 
 // Load middleware
 const auth = require("./middleware/auth");
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(cors());
 app.use(userRouter);
 app.use(taskRouter);
+app.use(categoryRouter);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.resolve(__dirname, "../public")));

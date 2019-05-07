@@ -101,6 +101,12 @@ userSchema.virtual("tasks", {
   foreignField: "owner"
 });
 
+userSchema.virtual("categories", {
+  ref: "Category",
+  localField: "_id",
+  foreignField: "owner"
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
