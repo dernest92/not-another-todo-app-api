@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
+const Category = require("./category");
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,6 +21,10 @@ const userSchema = new mongoose.Schema(
           throw new Error("Please provide a valid email address");
         }
       }
+    },
+    isGuest: {
+      type: Boolean,
+      default: false
     },
     password: {
       type: String,
@@ -54,6 +59,7 @@ userSchema.pre("save", async function(next) {
 userSchema.pre("remove", async function(next) {
   const user = this;
   await Task.deleteMany({ owner: user._id });
+  await Category.deleteMany({ owner: user._id });
   next();
 });
 

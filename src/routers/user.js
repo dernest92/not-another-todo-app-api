@@ -21,6 +21,26 @@ userRouter.post("/users", async (req, res) => {
   }
 });
 
+userRouter.post("/users/guest", async (req, res) => {
+  const identifier = "guest" + Math.floor(Math.random() * 1000);
+  const user = new User({
+    name: identifier,
+    email: `${identifier}@email.com`,
+    password: `${identifier}pass123`,
+    isGuest: true
+  });
+
+  try {
+    await user.save();
+    const token = await user.generateAuthToken();
+    res.status(201).send({ user, token });
+    console.log(user);
+  } catch (e) {
+    res.status(400).send(e);
+    console.log(e);
+  }
+});
+
 userRouter.post("/users/login", async (req, res) => {
   try {
     const user = await User.findByCredentials(
@@ -40,6 +60,9 @@ userRouter.post("/users/logout", auth, async (req, res) => {
       token => token.token !== req.token
     );
     await req.user.save();
+    if (req.user.isGuest) {
+      req.user.remove();
+    }
     res.send("you've been logged out");
   } catch (e) {
     res.status(500).send({ error: "server error" });
